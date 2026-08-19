@@ -19,6 +19,8 @@ namespace backend.Data
 
         public DbSet<Leave> Leaves => Set<Leave>();
 
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
