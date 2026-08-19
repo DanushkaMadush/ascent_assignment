@@ -23,11 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\DTOs\Auth\" />
-    <Folder Include="Models\DTOs\Employee\" />
     <Folder Include="Models\DTOs\Leave\" />
     <Folder Include="Models\DTOs\Attendance\" />
-    <Folder Include="Security\" />
   </ItemGroup>
 
 </Project>

@@ -55,6 +55,9 @@ namespace backend.Data.Configurations
                 .IsRequired()
                 .HasColumnType("datetime2");
 
+            //Created By
+            builder.Property(e => e.CreatedBy)
+                .HasMaxLength(450);
 
             builder.HasOne(e => e.ApplicationUser)
                 .WithOne(u => u.Employee)
