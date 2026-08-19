@@ -69,7 +69,7 @@ namespace backend.Security
                 SecurityAlgorithms.HmacSha256);
 
             var expiry = DateTime.UtcNow.AddMinutes(
-                _settings.ExpiryMinutes);
+                _settings.ExpiresInMinutes);
 
             var token = new JwtSecurityToken(
                 issuer: _settings.Issuer,
@@ -100,7 +100,7 @@ namespace backend.Security
         public DateTime GetAccessTokenExpiry()
         {
             return DateTime.UtcNow.AddMinutes(
-                _settings.ExpiryMinutes);
+                _settings.ExpiresInMinutes);
         }
     }
 }
