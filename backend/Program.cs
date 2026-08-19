@@ -59,6 +59,17 @@ builder.Services.AddAuthentication(options =>
             };
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -103,7 +114,11 @@ using (var scope = app.Services.CreateScope())
     await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
+app.UseMiddleware<CorrelationIdMiddleware>();
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -112,6 +127,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 
