@@ -22,7 +22,7 @@
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public string CreatedBy { get; set; } = null!;
+        public string? CreatedBy { get; set; }
 
         public ApplicationUser ApplicationUser { get; set; } = null!;
 
