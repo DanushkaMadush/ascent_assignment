@@ -1,4 +1,5 @@
-import { useLocation, Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+
 import { tokenStorage } from "../api/client/tokenStorage";
 import { getRoleFromToken, type Role } from "../api/client/jwt";
 
@@ -10,7 +11,7 @@ export const AuthGuard = ({ allowedRoles }: AuthGuardProps) => {
   const location = useLocation();
   const accessToken = tokenStorage.getAccessToken();
 
-  // User is not logged in
+  // Not logged in
   if (!accessToken) {
     return (
       <Navigate
@@ -23,13 +24,9 @@ export const AuthGuard = ({ allowedRoles }: AuthGuardProps) => {
 
   const role = getRoleFromToken(accessToken);
 
+  // No valid role
   if (!role) {
     return <Navigate to="/unauthorized" replace />;
-  }
-
-  // Any authenticated user can access
-  if (!allowedRoles) {
-    return <Outlet />;
   }
 
   // Admin can access everything
@@ -37,11 +34,10 @@ export const AuthGuard = ({ allowedRoles }: AuthGuardProps) => {
     return <Outlet />;
   }
 
-  // Check if user's role is allowed
-  if (allowedRoles.includes(role)) {
+  // Check allowed roles
+  if (allowedRoles?.includes(role)) {
     return <Outlet />;
   }
 
-  // User is logged in but doesn't have permission
   return <Navigate to="/unauthorized" replace />;
 };
