@@ -9,6 +9,7 @@ import AttendancePage from "../pages/attendance/AttendancePage";
 import LeavePage from "../pages/leave/LeavePage";
 import HomePage from "../pages/home/HomePage";
 import EmployeeFormPage from "../pages/employee/EmployeeFormPage";
+import DepartmentFormPage from "../pages/department/DepartmentFormPage";
 
 const AppRoutes = () => {
   return (
@@ -32,6 +33,7 @@ const AppRoutes = () => {
 
         <Route element={<AuthGuard allowedRoles={["Admin"]} />}>
           <Route path="/departments" element={<DepartmentPage />} />
+          <Route path="/departments/new" element={<DepartmentFormPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
