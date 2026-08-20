@@ -161,7 +161,7 @@ const EmployeeFormPage = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ margin: 15 }}>
       {/* Header */}
       <Box
         sx={{
