@@ -370,20 +370,3 @@ The Flutter mobile application provides user authentication and attendance actio
 | Home → Sign Out   | Completed       | Signs the user out of the application.                                     |
 | Leaves            | Not Implemented | Leave management functionality is planned but not yet implemented.         |
 | Attendance        | Not Implemented | Attendance history/view functionality is planned but not yet implemented.  |
-
-
----
-
-# Configuration
-
-Configuration details will be added for:
-
-* Backend database connection
-* JWT configuration
-* Frontend API base URL
-* Mobile API base URL
-* Development environment requirements
-
-**No secrets or credentials should be committed to the repository.**
-
----
