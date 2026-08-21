@@ -85,11 +85,13 @@ Restore the .NET dependencies:
 ```bash
 dotnet restore
 ```
-Setup appsettings.json connection string with database server name. Create EMS_DB in your DB.
-Database:
+
+Create an `EMS_DB` database in SQL Server and configure the connection string in `appsettings.json`.
+
+Then apply the Entity Framework Core migrations:
 
 ```bash
-dotnet ef update database
+dotnet ef database update
 ```
 
 Run the application:
@@ -98,19 +100,33 @@ Run the application:
 dotnet run
 ```
 
-The backend provides the API consumed by the frontend and mobile applications.
+### Seed Data
 
+When the backend starts, the application seeds the database with initial users, roles, and departments.
 
-Running project will seed sample users,roles,departments as below.
+**Admin user**
+- `ADMIN@EMS.COM` — Admin role
 
-Admin with Admin Role assigned - ADMIN@EMS.COM
-Departments - IT, HR, Administration
-3Managers for for eah department - HR.MANAGER@EMS.COM, it.manager@ems.com, ADMIN.MANAGER@EMS.COM
+**Departments**
+- IT
+- HR
+- Administration
 
+**Department Managers**
+- `HR.MANAGER@EMS.COM`
+- `IT.MANAGER@EMS.COM`
+- `ADMIN.MANAGER@EMS.COM`
 
-> **Database configuration and Entity Framework migration/initialization steps will be added once the backend configuration is confirmed.**
+**Department Employees**
+- `IT.EMPLOYEE1@EMS.COM`
+- `IT.EMPLOYEE2@EMS.COM`
+- `HR.EMPLOYEE3@EMS.COM`
+- `HR.EMPLOYEE1@EMS.COM`
+- `HR.EMPLOYEE2@EMS.COM`
+- `ADM.EMPLOYEE3@EMS.COM`
+- `ADM.EMPLOYEE1@EMS.COM`
+- `ADM.EMPLOYEE2@EMS.COM`
 
-> **The exact backend URL/port will be added once confirmed.**
 
 ### Swagger
 
@@ -134,10 +150,10 @@ Install the dependencies:
 npm install
 ```
 
-Add the .env fila as env-example and add your backend BASE URL :
+Copy `.env.example` to `.env` and update the API URL:
 
-```bash
-VITE_API_BASE_URL=https://yourbackendurl/api/v1
+```env
+VITE_API_BASE_URL=https://your-backend-url/api/v1
 ```
 
 Start the Vite development server:
