@@ -217,3 +217,65 @@ Desktop.ini
 *.pid
 *.seed
 *.tgz
+
+# ============================================================
+# Flutter / Dart
+# ============================================================
+
+# Dart / Flutter generated files
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
+
+# Flutter generated documentation
+**/doc/api/
+
+# Flutter build output
+**/build/
+
+# Test coverage
+**/coverage/
+
+# Flutter iOS generated files
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+
+# Android build artifacts
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+
+# Android generated files
+**/android/.gradle/
+**/android/local.properties
+
+# iOS CocoaPods
+**/ios/Pods/
+**/ios/.symlinks/
+
+# Symbolication
+**/app.*.symbols
+
+# Obfuscation
+**/app.*.map.json
+
+# Widget Preview
+**/.widget_preview/
+
+# Dart generated files
+**/*.g.dart
+**/*.freezed.dart
+
+# Flutter / Dart miscellaneous
+**/*.class
+**/.atom/
+**/.build/
+**/.buildlog/
+**/.history/
+**/.swiftpm/
+**/migrate_working_dir/
+**/.idea/
