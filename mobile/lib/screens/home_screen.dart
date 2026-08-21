@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../models/attendance_models.dart';
+import '../services/attendance_service.dart';
 import '../storage/secure_storage_service.dart';
 import 'attendance_screen.dart';
 import 'leaves_screen.dart';
 import 'login_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final String employeeId;
   final String firstName;
   final String lastName;
@@ -17,29 +19,142 @@ class HomeScreen extends StatelessWidget {
     required this.lastName,
   });
 
-  Future<void> _signOut(BuildContext context) async {
-    final storageService = SecureStorageService();
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-    await storageService.clearTokens();
+class _HomeScreenState extends State<HomeScreen> {
+  final SecureStorageService _storageService = SecureStorageService();
+  final AttendanceService _attendanceService = AttendanceService();
 
-    if (!context.mounted) return;
+  bool _isCheckingIn = false;
+  bool _isCheckingOut = false;
+
+  Future<void> _checkIn() async {
+    setState(() {
+      _isCheckingIn = true;
+    });
+
+    try {
+      final accessToken = await _storageService.getAccessToken();
+
+      if (accessToken == null || accessToken.isEmpty) {
+        _showMessage('Session expired. Please sign in again.');
+        return;
+      }
+
+      final request = CheckInRequest(
+        employeeId: widget.employeeId,
+        deviceType: 'Android',
+      );
+
+      final result = await _attendanceService.checkIn(
+        request,
+        accessToken,
+      );
+
+      if (!mounted) return;
+
+      if (result.success) {
+        _showMessage(
+          result.message.isNotEmpty
+              ? result.message
+              : 'Check-in successful.',
+        );
+      } else {
+        _showMessage(
+          result.message.isNotEmpty
+              ? result.message
+              : 'Check-in failed.',
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      _showMessage(
+        'Unable to connect to the server.',
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isCheckingIn = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _checkOut() async {
+    setState(() {
+      _isCheckingOut = true;
+    });
+
+    try {
+      final accessToken = await _storageService.getAccessToken();
+
+      if (accessToken == null || accessToken.isEmpty) {
+        _showMessage('Session expired. Please sign in again.');
+        return;
+      }
+
+      final request = CheckOutRequest(
+        employeeId: widget.employeeId,
+      );
+
+      final result = await _attendanceService.checkOut(
+        request,
+        accessToken,
+      );
+
+      if (!mounted) return;
+
+      if (result.success) {
+        _showMessage(
+          result.message.isNotEmpty
+              ? result.message
+              : 'Check-out successful.',
+        );
+      } else {
+        _showMessage(
+          result.message.isNotEmpty
+              ? result.message
+              : 'Check-out failed.',
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      _showMessage(
+        'Unable to connect to the server.',
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isCheckingOut = false;
+        });
+      }
+    }
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
+  Future<void> _signOut() async {
+    await _storageService.clearTokens();
+
+    if (!mounted) return;
 
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (_) => const LoginScreen(),
       ),
       (route) => false,
-    );
-  }
-
-  void _showMessage(
-    BuildContext context,
-    String message,
-  ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
     );
   }
 
@@ -57,7 +172,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 24),
 
               Text(
-                'Hi $firstName $lastName,',
+                'Hi ${widget.firstName} ${widget.lastName},',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 24,
@@ -81,13 +196,18 @@ class HomeScreen extends StatelessWidget {
                 width: 220,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {
-                    _showMessage(
-                      context,
-                      'Check In will be implemented next.',
-                    );
-                  },
-                  child: const Text('Check In'),
+                  onPressed: _isCheckingIn || _isCheckingOut
+                      ? null
+                      : _checkIn,
+                  child: _isCheckingIn
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text('Check In'),
                 ),
               ),
 
@@ -97,13 +217,18 @@ class HomeScreen extends StatelessWidget {
                 width: 220,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {
-                    _showMessage(
-                      context,
-                      'Check Out will be implemented next.',
-                    );
-                  },
-                  child: const Text('Check Out'),
+                  onPressed: _isCheckingIn || _isCheckingOut
+                      ? null
+                      : _checkOut,
+                  child: _isCheckingOut
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text('Check Out'),
                 ),
               ),
 
@@ -147,7 +272,9 @@ class HomeScreen extends StatelessWidget {
                 width: 220,
                 height: 48,
                 child: OutlinedButton(
-                  onPressed: () => _signOut(context),
+                  onPressed: _isCheckingIn || _isCheckingOut
+                      ? null
+                      : _signOut,
                   child: const Text('Sign Out'),
                 ),
               ),
