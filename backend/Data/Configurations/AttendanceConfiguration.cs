@@ -49,6 +49,7 @@ namespace backend.Data.Configurations
                 .HasForeignKey(a => a.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Index to ensure uniqueness of attendance records per employee per day
             builder.HasIndex(a => new
             {
                 a.EmployeeId,
@@ -56,6 +57,7 @@ namespace backend.Data.Configurations
             })
             .IsUnique();
 
+            // Index on WorkDate for faster queries by workdate
             builder.HasIndex(a => a.WorkDate);
         }
     }

@@ -61,10 +61,13 @@ namespace backend.Data.Configurations
                 .HasForeignKey(l => l.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Index for queries filtering data by employee id
             builder.HasIndex(l => l.EmployeeId);
 
+            // Index for queries filtering data by status
             builder.HasIndex(l => l.Status);
 
+            // Index for queries filtering data by start date and end date
             builder.HasIndex(l => new
             {
                 l.StartDate,

@@ -74,6 +74,7 @@ namespace backend.Data.Configurations
                 .HasForeignKey(e => e.ManagerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // index on ManagerId for faster queries on employees under a specific manager
             builder.HasIndex(e => e.ManagerId);
         }
     }
