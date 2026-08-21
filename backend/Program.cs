@@ -14,13 +14,15 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
+// Get JWT section from appsettings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
+// Configure Entity Framework Core with SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Identity configuration
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
@@ -37,6 +39,7 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+// JWT Authentication configuration
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -59,6 +62,7 @@ builder.Services.AddAuthentication(options =>
             };
     });
 
+// CORS configuration
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -100,6 +104,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Register services for dependency injection
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
@@ -109,15 +114,19 @@ builder.Services.AddScoped<ILeaveService, LeaveService>();
 
 var app = builder.Build();
 
+// Seed the database with initial data
 using (var scope = app.Services.CreateScope())
 {
     await IdentitySeeder.SeedAsync(scope.ServiceProvider);
 }
 
+// Create a correlation ID for each request
 app.UseMiddleware<CorrelationIdMiddleware>();
 
+// Use custom exception handling middleware and log exceptions
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+// Use custom request logging middleware to log incoming requests
 app.UseMiddleware<RequestLoggingMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -126,14 +135,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Https redirection middleware
 app.UseHttpsRedirection();
 
+// CORS middleware
 app.UseCors("AllowAll");
 
+// Authenticate using JWT
 app.UseAuthentication();
 
+// Authorization middleware
 app.UseAuthorization();
 
+// Map controllers to endpoints
 app.MapControllers();
 
 app.Run();
